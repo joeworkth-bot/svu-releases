@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopee Video Uploader — อัปโหลด Shopee Affiliate อัตโนมัติ</title>
+<meta name="description" content="โปรแกรมอัปโหลดวิดีโอ Shopee Video Affiliate อัตโนมัติ ผ่านมือถือ Android สูงสุด 6 เครื่องพร้อมกัน">
+<meta property="og:title" content="Shopee Video Uploader">
+<meta property="og:description" content="อัปโหลด Shopee Affiliate อัตโนมัติ ผ่านมือถือหลายเครื่อง">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #EE4D2D;
+    --orange-dark: #D33E1F;
+    --paper: #F4F5F8;
+    --text: #1F2937;
+    --text-soft: #6B7280;
+    --border: #E5E7EB;
+    --card: #FFFFFF;
+    --green: #10B981;
+    --amber: #F59E0B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--paper);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── nav ─────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  nav .logo { font-weight: 700; font-size: 18px; color: var(--orange); }
+  nav .links { display: flex; gap: 24px; }
+  nav .links a {
+    color: var(--text-soft); text-decoration: none; font-weight: 500;
+    font-size: 14px; transition: color 0.2s;
+  }
+  nav .links a:hover { color: var(--orange); }
+  @media (max-width: 640px) { nav .links { display: none; } }
+
+  /* ── buttons ─────────────────────────────── */
+  .btn {
+    display: inline-block; padding: 12px 28px;
+    background: var(--orange); color: white;
+    text-decoration: none; font-weight: 600; font-size: 15px;
+    border-radius: 8px; border: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn.secondary { background: white; color: var(--orange); border: 2px solid var(--orange); }
+  .btn.secondary:hover { background: var(--paper); }
+  .btn.lg { padding: 16px 36px; font-size: 16px; }
+
+  /* ── hero ────────────────────────────────── */
+  .hero {
+    padding: 80px 0 60px;
+    background: linear-gradient(180deg, #FFF7F5 0%, var(--paper) 100%);
+    text-align: center;
+  }
+  .hero .badge {
+    display: inline-block; padding: 6px 14px;
+    background: #FEE4DE; color: var(--orange);
+    border-radius: 999px; font-size: 13px; font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700; line-height: 1.2; margin-bottom: 16px;
+  }
+  .hero h1 .accent { color: var(--orange); }
+  .hero .tagline {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--text-soft); margin-bottom: 32px;
+    max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+  .hero .cta-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .hero .trust {
+    display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+    font-size: 13px; color: var(--text-soft);
+  }
+  .hero .trust span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── sections ────────────────────────────── */
+  section { padding: 64px 0; }
+  section h2 {
+    font-size: clamp(24px, 4vw, 32px); font-weight: 700;
+    text-align: center; margin-bottom: 12px;
+  }
+  section .subtitle {
+    text-align: center; color: var(--text-soft);
+    margin-bottom: 48px; font-size: 15px;
+  }
+
+  /* ── features grid ───────────────────────── */
+  .features {
+    display: grid; gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .feature {
+    background: var(--card); padding: 28px;
+    border-radius: 12px; border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .feature .icon { font-size: 32px; margin-bottom: 12px; }
+  .feature h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .feature p { color: var(--text-soft); font-size: 14px; }
+
+  /* ── how it works ────────────────────────── */
+  .how { background: white; }
+  .steps {
+    display: grid; gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .step { text-align: center; padding: 16px; }
+  .step .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--orange); color: white;
+    font-size: 20px; font-weight: 700; margin-bottom: 16px;
+  }
+  .step h3 { font-size: 16px; margin-bottom: 8px; }
+  .step p { color: var(--text-soft); font-size: 14px; }
+
+  /* ── pricing ─────────────────────────────── */
+  .pricing-grid {
+    display: grid; gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    max-width: 720px; margin: 0 auto;
+  }
+  .price-card {
+    background: var(--card); padding: 36px 28px;
+    border-radius: 16px; border: 2px solid var(--border);
+    position: relative;
+  }
+  .price-card.featured {
+    border-color: var(--orange);
+    box-shadow: 0 8px 32px rgba(238,77,45,0.12);
+  }
+  .price-card .tag {
+    position: absolute; top: -12px; right: 20px;
+    background: var(--orange); color: white;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+  }
+  .price-card .plan-name {
+    font-size: 18px; font-weight: 600; margin-bottom: 8px;
+  }
+  .price-card .price {
+    font-size: 36px; font-weight: 700; color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .price-card .price-note {
+    color: var(--text-soft); font-size: 14px; margin-bottom: 24px;
+  }
+  .price-card ul { list-style: none; margin-bottom: 28px; }
+  .price-card li {
+    padding: 8px 0; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .price-card li::before {
+    content: "✓"; color: var(--green); font-weight: 700;
+  }
+  .price-card .btn { display: block; text-align: center; }
+
+  /* ── faq ─────────────────────────────────── */
+  .faq { background: white; }
+  .faq-list { max-width: 720px; margin: 0 auto; }
+  details {
+    background: var(--paper); border-radius: 10px;
+    padding: 18px 22px; margin-bottom: 12px;
+    cursor: pointer; border: 1px solid var(--border);
+  }
+  details[open] { background: white; border-color: var(--orange); }
+  summary {
+    font-weight: 600; font-size: 15px;
+    list-style: none; display: flex; justify-content: space-between;
+  }
+  summary::after { content: "+"; color: var(--orange); font-size: 22px; font-weight: 700; }
+  details[open] summary::after { content: "−"; }
+  details p {
+    margin-top: 12px; color: var(--text-soft); font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── cta band ────────────────────────────── */
+  .cta-band {
+    background: linear-gradient(135deg, var(--orange) 0%, #FF6B47 100%);
+    color: white; text-align: center; padding: 60px 20px;
+  }
+  .cta-band h2 { color: white; margin-bottom: 12px; }
+  .cta-band p { opacity: 0.95; margin-bottom: 24px; }
+  .cta-band .btn {
+    background: white; color: var(--orange);
+  }
+  .cta-band .btn:hover { background: var(--paper); }
+
+  /* ── footer ──────────────────────────────── */
+  footer {
+    background: #1F2937; color: #9CA3AF;
+    padding: 40px 20px; text-align: center;
+  }
+  footer .line-btn {
+    display: inline-block; padding: 12px 28px;
+    background: #06C755; color: white; text-decoration: none;
+    border-radius: 8px; font-weight: 600; margin: 16px 0;
+  }
+  footer .line-btn:hover { background: #05A647; }
+  footer .disclaimer {
+    font-size: 12px; margin-top: 20px;
+    border-top: 1px solid #374151; padding-top: 20px;
+    max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">Shopee Video Uploader</div>
+    <div class="links">
+      <a href="#features">ฟีเจอร์</a>
+      <a href="#how">วิธีใช้</a>
+      <a href="#pricing">ราคา</a>
+      <a href="#faq">คำถาม</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="badge">🚀 ทดลองฟรี 3 วัน</div>
+    <h1>อัปโหลด Shopee Affiliate<br><span class="accent">อัตโนมัติ</span> ทีละ 6 มือถือ</h1>
+    <p class="tagline">
+      โปรแกรมสำหรับนัก Affiliate Shopee — อัปวิดีโอพร้อมกันหลายเครื่อง
+      มี AI สร้างคำบรรยายไทย + ระบบ Anti-ban ครบจบในตัวเดียว
+    </p>
+    <div class="cta-row">
+      <a href="https://github.com/joeworkth-bot/svu-releases/releases/latest/download/ShopeeVideoUploader-Setup-1.0.0.exe" class="btn lg">
+        ⬇ ดาวน์โหลดเลย
+      </a>
+      <a href="https://lin.ee/xDX1WKs" class="btn lg secondary">
+        💬 ทักไลน์ขอ Key
+      </a>
+    </div>
+    <div class="trust">
+      <span>✓ Windows 10/11</span>
+      <span>✓ ขนาด 60 MB</span>
+      <span>✓ ไม่ต้องลงทะเบียน</span>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <h2>ฟีเจอร์หลัก</h2>
+    <p class="subtitle">ครบทุกอย่างที่นัก Affiliate ต้องการ ในโปรแกรมเดียว</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">🤖</div>
+        <h3>อัปโหลดอัตโนมัติ</h3>
+        <p>ทำงานบนแอป Shopee จริงผ่านมือถือ ไม่ใช้ API — ปลอดภัยจากการแบน</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📱</div>
+        <h3>6 มือถือพร้อมกัน</h3>
+        <p>รองรับสูงสุด 6 บัญชี Shopee พร้อมกัน — 1 บัญชี/มือถือ</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🧠</div>
+        <h3>AI Caption ภาษาไทย</h3>
+        <p>OpenAI / Gemini สร้าง caption ไม่ซ้ำ ≤150 ตัวอักษร พร้อม hashtag</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🛡️</div>
+        <h3>Anti-ban ครบเครื่อง</h3>
+        <p>ดีเลย์สุ่ม 4–9 นาที, คูลดาวน์สินค้าเดิม 60 นาที, จำลองการพิมพ์มนุษย์</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔗</div>
+        <h3>Affiliate Link อัตโนมัติ</h3>
+        <p>ผูกลิงก์สินค้าก่อนโพสต์ทุกครั้ง — ไม่พลาด commission</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📊</div>
+        <h3>ประวัติครบ + CSV</h3>
+        <p>ดู Post ID + เวลา + filter ตามเครื่อง — export Excel ได้</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="how">
+  <div class="container">
+    <h2>วิธีเริ่มใช้งาน</h2>
+    <p class="subtitle">4 ขั้นตอน ใช้เวลาแค่ 5 นาที</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>ดาวน์โหลด + ติดตั้ง</h3>
+        <p>กดปุ่มดาวน์โหลด ดับเบิ้ลคลิก installer</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>กรอก License Key</h3>
+        <p>ทักไลน์ขอ key ทดลองฟรี 3 วัน</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>เชื่อมมือถือ</h3>
+        <p>เปิด USB Debugging → เสียบสาย</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h3>เริ่มอัปโหลด</h3>
+        <p>วาง affiliate link → กดเริ่ม → รอ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <h2>ราคา</h2>
+    <p class="subtitle">เริ่มทดลองฟรี — อัปเกรดเมื่อพร้อม</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="plan-name">ทดลองใช้</div>
+        <div class="price">ฟรี</div>
+        <div class="price-note">3 วัน · 1 เครื่องต่อ Key</div>
+        <ul>
+          <li>รองรับ 6 มือถือ</li>
+          <li>AI Caption ครบทุกฟีเจอร์</li>
+          <li>Anti-ban เต็มรูปแบบ</li>
+          <li>ครบทุกฟีเจอร์เหมือนเสียเงิน</li>
+        </ul>
+        <a href="https://lin.ee/xDX1WKs" class="btn">ขอ Key ทดลอง</a>
+      </div>
+      <div class="price-card featured">
+        <div class="tag">POPULAR</div>
+        <div class="plan-name">รายเดือน</div>
+        <div class="price">฿___</div>
+        <div class="price-note">30 วัน · 1 เครื่องต่อ Key</div>
+        <ul>
+          <li>รองรับ 6 มือถือ</li>
+          <li>AI Caption ครบทุกฟีเจอร์</li>
+          <li>Anti-ban เต็มรูปแบบ</li>
+          <li>Auto-update เวอร์ชั่นใหม่ฟรี</li>
+          <li>Support ทาง Line</li>
+        </ul>
+        <a href="https://lin.ee/xDX1WKs" class="btn">ซื้อเลย</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="faq">
+  <div class="container">
+    <h2>คำถามที่พบบ่อย</h2>
+    <p class="subtitle">ถ้ายังสงสัย ทักไลน์ถามได้เลย</p>
+    <div class="faq-list">
+      <details>
+        <summary>โปรแกรมทำให้บัญชี Shopee ถูกแบนไหม?</summary>
+        <p>มีระบบ Anti-ban ลดความเสี่ยง (ดีเลย์สุ่ม + คูลดาวน์ + จำลองการพิมพ์)
+        แต่ไม่รับประกัน 100% — หากใช้งานเกิน 45 คลิป/บัญชี/วัน เสี่ยงสูง
+        แนะนำใช้พอดี ตามกฎ Shopee</p>
+      </details>
+      <details>
+        <summary>ต้องใช้ Windows อะไร?</summary>
+        <p>Windows 10 หรือ 11 (64-bit) · ต้องเชื่อมมือถือ Android ผ่านสาย USB
+        หรือ Wi-Fi ADB · ต้องมีเน็ตสำหรับ AI</p>
+      </details>
+      <details>
+        <summary>1 Key ใช้ได้กี่เครื่อง?</summary>
+        <p>1 License Key ผูกกับ 1 คอมพิวเตอร์เท่านั้น (ระบุด้วย Machine ID ของ Windows)
+        ย้ายเครื่องต้องขอ key ใหม่ — ไม่สามารถใช้ key เดียวบนหลายเครื่องได้</p>
+      </details>
+      <details>
+        <summary>รองรับมือถือกี่เครื่องพร้อมกัน?</summary>
+        <p>สูงสุด 6 มือถือพร้อมกัน — แต่ละมือถือ login บัญชี Shopee คนละบัญชี
+        (1 บัญชี Shopee ต่อ 1 มือถือ ป้องกัน Shopee จับว่าผิดปกติ)</p>
+      </details>
+      <details>
+        <summary>AI ค่าใช้จ่ายเท่าไหร่?</summary>
+        <p>ใช้ API key ของ OpenAI หรือ Gemini ของลูกค้าเอง
+        ค่าใช้จ่ายประมาณ ฿0.10–0.30 ต่อ caption (น้อยมาก)
+        Gemini มี free tier ให้ใช้ฟรี</p>
+      </details>
+      <details>
+        <summary>มีคู่มือการใช้งานไหม?</summary>
+        <p>มีคู่มือฉบับเต็มสำหรับลูกค้าเมื่อซื้อ key — สอนตั้งแต่ติดตั้ง
+        เชื่อมมือถือ ตั้ง AI provider จนถึงอัปโหลดจริง</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>พร้อมเริ่มอัปโหลดอัตโนมัติแล้ว?</h2>
+    <p>ทดลองฟรี 3 วัน — ไม่ต้องผูกบัตรเครดิต</p>
+    <a href="https://github.com/joeworkth-bot/svu-releases/releases/latest/download/ShopeeVideoUploader-Setup-1.0.0.exe" class="btn lg">
+      ⬇ ดาวน์โหลดเลย
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="logo" style="color:white; font-weight:700; font-size:18px; margin-bottom:8px;">
+      Shopee Video Uploader
+    </div>
+    <p>ติดต่อสั่งซื้อ / สอบถาม</p>
+    <a href="https://lin.ee/xDX1WKs" class="line-btn">💬 เพิ่มเพื่อนใน Line</a>
+    <div class="disclaimer">
+      © 2026 Shopee Video Uploader · เครื่องมือ third-party
+      ไม่ใช่ผลิตภัณฑ์ของ Shopee อย่างเป็นทางการ ผู้ใช้รับความเสี่ยงเอง
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
